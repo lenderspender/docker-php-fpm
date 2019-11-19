@@ -1,4 +1,4 @@
-FROM php:rc-fpm
+FROM php:7.3
 
 ENV XDEBUG="false"
 
@@ -22,7 +22,8 @@ RUN apt-get update && \
         nano \
         libxml2-dev \
         libsqlite-dev \
-        libzip-dev
+        libzip-dev \
+        wget
 
 # Install soap extention
 RUN docker-php-ext-install soap
@@ -50,12 +51,11 @@ RUN pecl install imagick
 RUN docker-php-ext-enable imagick
 
 # Install GD
-RUN docker-php-ext-install gd && \
-    docker-php-ext-configure gd \
-        --enable-gd-native-ttf \
-        --with-jpeg-dir=/usr/lib \
-        --with-freetype-dir=/usr/include/freetype2 && \
-    docker-php-ext-install gd
+RUN apt-get install -y libwebp-dev libjpeg62-turbo-dev libpng-dev libxpm-dev \
+                libfreetype6-dev
+
+RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/
+RUN docker-php-ext-install -j$(nproc) gd
 
 # Install xDebug
 RUN pecl install xdebug-2.8.0beta2
@@ -65,6 +65,9 @@ COPY ./xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
 # Install the php memcached extension
 RUN pecl install memcached && docker-php-ext-enable memcached
+
+# Install dockerize
+RUN wget https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-v0.6.1.tar.gz && rm dockerize-linux-amd64-v0.6.1.tar.gz
 
 # Install composer and add its bin to the PATH.
 RUN curl -s http://getcomposer.org/installer | php && \
