@@ -1,4 +1,4 @@
-FROM php:7.3
+FROM php:7.4.0RC6-fpm
 
 ENV XDEBUG="false"
 
@@ -23,7 +23,8 @@ RUN apt-get update && \
         libxml2-dev \
         libsqlite-dev \
         libzip-dev \
-        wget
+        wget \
+        unzip
 
 # Install soap extention
 RUN docker-php-ext-install soap
@@ -54,7 +55,7 @@ RUN docker-php-ext-enable imagick
 RUN apt-get install -y libwebp-dev libjpeg62-turbo-dev libpng-dev libxpm-dev \
                 libfreetype6-dev
 
-RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/
+RUN docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/
 RUN docker-php-ext-install -j$(nproc) gd
 
 # Install xDebug
@@ -65,6 +66,9 @@ COPY ./xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
 # Install the php memcached extension
 RUN pecl install memcached && docker-php-ext-enable memcached
+
+# Install the PHP intl extension
+RUN docker-php-ext-install intl
 
 # Install dockerize
 RUN wget https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-v0.6.1.tar.gz && rm dockerize-linux-amd64-v0.6.1.tar.gz
