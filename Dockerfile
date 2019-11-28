@@ -23,7 +23,8 @@ RUN apt-get update && \
         libxml2-dev \
         libsqlite-dev \
         libzip-dev \
-        wget
+        wget \
+        unzip
 
 # Install soap extention
 RUN docker-php-ext-install soap
