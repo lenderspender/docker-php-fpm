@@ -1,4 +1,4 @@
-FROM php:7.4.0RC6-fpm
+FROM php:7.4-fpm
 
 ENV XDEBUG="false"
 
@@ -69,6 +69,9 @@ RUN pecl install memcached && docker-php-ext-enable memcached
 
 # Install the PHP intl extension
 RUN docker-php-ext-install intl
+
+# Install the PHP opcache extension
+RUN docker-php-ext-install opcache
 
 # Install dockerize
 RUN wget https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-v0.6.1.tar.gz && rm dockerize-linux-amd64-v0.6.1.tar.gz
