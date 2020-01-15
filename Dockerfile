@@ -74,7 +74,7 @@ RUN docker-php-ext-install intl
 RUN docker-php-ext-install opcache
 
 # Install redis
-RUN pecl install redis <<<''
+RUN yes '' | pecl install -f redis
 RUN docker-php-ext-enable redis
 
 # Install dockerize
