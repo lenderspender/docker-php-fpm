@@ -59,7 +59,7 @@ RUN docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/i
 RUN docker-php-ext-install -j$(nproc) gd
 
 # Install xDebug
-RUN pecl install xdebug-2.8.0beta2
+RUN pecl install xdebug-2.8.0
 RUN docker-php-ext-enable xdebug
 # Copy xdebug configration for remote debugging
 COPY ./xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
@@ -72,6 +72,9 @@ RUN docker-php-ext-install intl
 
 # Install the PHP opcache extension
 RUN docker-php-ext-install opcache
+
+# Install redis
+RUN pecl install redis <<<''
 
 # Install dockerize
 RUN wget https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-v0.6.1.tar.gz && rm dockerize-linux-amd64-v0.6.1.tar.gz
